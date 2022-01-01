@@ -81,9 +81,8 @@
     "vue": "^3.0.0"
   },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
+    "!(dist/**/*|lib/**/*)*.js": [
+      "eslint --fix"
     ]
   },
   "pre-commit": "lint-staged",
