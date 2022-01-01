@@ -1,8 +1,6 @@
 .DS_Store
 .vscode
 node_modules/
-dist
-lib
 npm-debug.log
 npm-debug.log.*
 bundle-stats.html
