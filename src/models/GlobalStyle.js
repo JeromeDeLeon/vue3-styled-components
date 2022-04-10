@@ -1,10 +1,8 @@
-
 import flatten from '../utils/flatten'
 import styleSheet from './StyleSheet'
 import stylis from 'stylis'
 
 export default class ComponentStyle {
-
   constructor (rules, selector) {
     this.rules = rules
     this.selector = selector

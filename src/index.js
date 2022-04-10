@@ -5,6 +5,7 @@ import injectGlobal from './constructors/injectGlobal'
 import ThemeProvider from './providers/ThemeProvider'
 import _styledComponent from './models/StyledComponent'
 import _componentStyle from './models/ComponentStyle'
+import styleSheet from './models/StyleSheet'
 import _styled from './constructors/styled'
 
 const styled = _styled(
@@ -13,4 +14,4 @@ const styled = _styled(
 
 export default styled
 
-export { css, injectGlobal, keyframes, ThemeProvider }
+export { css, injectGlobal, keyframes, ThemeProvider, styleSheet }

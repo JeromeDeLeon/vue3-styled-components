@@ -1,6 +1,6 @@
 {
-  "name": "vue3-styled-components",
-  "version": "1.2.1",
+  "name": "@datawave-au/vue3-styled-components",
+  "version": "1.3.0",
   "description": "Visual primitives for the component age. A simple port of styled-components 💅 for Vue",
   "main": "lib/index.js",
   "module": "dist/vue-styled-components.es.js",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/UX-and-I/vue3-styled-components.git"
+    "url": "git+https://github.com/DatawaveAu/vue3-styled-components.git"
   },
   "keywords": [
     "vue",
@@ -81,8 +81,9 @@
     "vue": "^3.0.0"
   },
   "lint-staged": {
-    "!(dist/**/*|lib/**/*)*.js": [
-      "eslint --fix"
+    "*.js": [
+      "eslint --fix",
+      "git add"
     ]
   },
   "pre-commit": "lint-staged",

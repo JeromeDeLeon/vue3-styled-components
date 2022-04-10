@@ -27,6 +27,16 @@ class StyleSheet {
   rules () {
     return this.globalStyleSheet.rules().concat(this.componentStyleSheet.rules())
   }
+
+  relink () {
+    this.globalStyleSheet.relink()
+    this.componentStyleSheet.relink()
+  }
+
+  setRoot (rootEl) {
+    this.globalStyleSheet.setRoot(rootEl)
+    this.componentStyleSheet.setRoot(rootEl)
+  }
 }
 
 /* Export stylesheet as a singleton class */

@@ -4,7 +4,7 @@ It has been refactored to work with Vuejs 3. Changes are too large to merge them
 
 Also, we'll have to see how the update path will work for Vuejs 2.x dependencies. This is a very quick, as-is-port of vue-styled-components, meaning it will only provide the functionality we need, until vue-styled-components hopefully has found its own path to Vuejs 3.
 
-Please note that the package name has been changed to `vue3-styled-components` to avoid any name collisions.
+Please note that the package name has been changed to `@datawave/vue3-styled-components` to avoid any name collisions.
 
 ---
 
@@ -14,10 +14,10 @@ Please note that the package name has been changed to `vue3-styled-components` t
 
 ## Support
 
-> This version is compatible with Vue 2.x
+> This version is compatible with Vue 3.x
 
 ```
-yarn add vue-styled-components
+yarn add @datawave/vue3-styled-components
 ```
 
 Utilising tagged template literals (a recent addition to JavaScript) and the power of CSS allows you to write actual CSS code to style your components. It also removes the mapping between components and styles – using components as a low-level styling construct could not be easier!
@@ -46,7 +46,7 @@ Utilising tagged template literals (a recent addition to JavaScript) and the pow
 This creates two Vue components, `<StyledTitle>` and `<Wrapper>`:
 
 ```JS
-import styled from 'vue-styled-components';
+import styled from '@datawave/vue3-styled-components';
 
 // Create a <StyledTitle> Vue component that renders an <h1> which is
 // centered, palevioletred and sized at 1.5em
@@ -78,7 +78,7 @@ You render them like so:
 Styled components pass on all their props. This is a styled `<input>`:
 
 ```JS
-import styled from 'vue-styled-components';
+import styled from '@datawave/vue3-styled-components';
 
 // Create an <StyledInput> component that'll render an <input> tag with some styles
 const StyledInput = styled.input`
@@ -119,7 +119,7 @@ This is a button component that has a `primary` state. By setting `primary` to `
 ```
 
 ```JSX
-import styled from 'vue-styled-components';
+import styled from '@datawave/vue3-styled-components';
 
 const btnProps = { primary: Boolean };
 
@@ -146,7 +146,7 @@ export default StyledButton;
 Taking the `StyledButton` component from above and removing the primary rules, this is what we're left with – just a normal button:
 
 ```JSX
-import styled from 'vue-styled-components';
+import styled from '@datawave/vue3-styled-components';
 
 const StyledButton = styled.button`
   background: white;
@@ -168,7 +168,7 @@ export default StyledButton;
 Remember to register `ThemeProvider` locally.
 
 ```JSX
-  import {ThemeProvider} from 'vue-styled-components'
+  import {ThemeProvider} from '@datawave/vue3-styled-components';
 
   new Vue({
     // ...
@@ -205,7 +205,7 @@ And into your `Wrapper` component:
 You can style also Vue component constructors as `router-link` from `vue-router` and other components
 
 ```JSX
-import styled from 'vue-styled-components';
+import styled from '@datawave/vue3-styled-components';
 
 // unfortunately you can't import directly router-link, you have to retrieve contstructor
 const RouterLink = Vue.component('router-link')
@@ -279,7 +279,7 @@ A helper method to write global CSS. Does not return a component, adds the style
 ```JS
 // global-styles.js
 
-import { injectGlobal } from 'vue-styled-components';
+import { injectGlobal } from '@datawave/vue3-styled-components';
 
 injectGlobal`
 	@font-face {
@@ -291,6 +291,42 @@ injectGlobal`
 		margin: 0;
 	}
 `;
+```
+
+### Style Tag Parent
+If you want to control where your style tags are injected, you can use the syntax below. This is specially useful when your app is using ShadowDOM custom elements.
+
+```JS
+import { styleSheet } from '@datawave/vue3-styled-components';
+
+export default class CustomElement extends HTMLElement {
+  constructor() {
+    super();
+
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    styleSheet.setRoot(this.shadowRoot);
+  }
+
+  disconnectedCallback() {
+    styleSheet.setRoot(document.head);
+  }
+}
+```
+
+### Cypress
+This lib keeps track of the style tags it created by reference. Cypress, when running the tests, breaks those references and breaks the lib functionality.
+
+You can overcome this by reattaching the correct style tags to the DOM.
+
+```JS
+import { styleSheet } from '@datawave/vue3-styled-components';
+
+beforeEach(() => {
+  styleSheet.relink();
+});
 ```
 
 ## Syntax highlighting

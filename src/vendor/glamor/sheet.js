@@ -48,15 +48,9 @@ const oldIE = (() => {
   }
 })()
 
-function makeStyleTag() {
-  let tag = document.createElement('style')
-  tag.type = 'text/css'
-  tag.classList.add('mol-style')
-  tag.appendChild(document.createTextNode(''));
-  (document.head || document.getElementsByTagName('head')[0]).appendChild(tag)
-  return tag
+function rootEl() {
+  return document.head || document.getElementsByTagName('head')[0];
 }
-
 
 export class StyleSheet {
   constructor({
@@ -66,8 +60,10 @@ export class StyleSheet {
     this.isSpeedy = speedy // the big drawback here is that the css won't be editable in devtools
     this.sheet = undefined
     this.tags = []
+    this.nodes = []
     this.maxLength = maxLength
     this.ctr = 0
+    this.root = rootEl();
   }
   inject() {
     if(this.injected) {
@@ -75,7 +71,8 @@ export class StyleSheet {
     }
     if(isBrowser) {
       // this section is just weird alchemy I found online off many sources
-      this.tags[0] = makeStyleTag()
+      this.tags[0] = this.makeStyleTag()
+      this.nodes.push({tag: this.tags[0], nodes: []});
       // this weirdness brought to you by firefox
       this.sheet = sheetForTag(this.tags[0])
     }
@@ -124,8 +121,10 @@ export class StyleSheet {
       }
       else{
         const textNode = document.createTextNode(rule)
-        last(this.tags).appendChild(textNode)
+        const lastTag = last(this.tags);
+        lastTag.appendChild(textNode)
         insertedRule = { textNode, appendRule: newCss => textNode.appendData(newCss)}
+        this.nodes.find(({tag}) => tag === lastTag).nodes.push(textNode);
 
         if(!this.isSpeedy) {
           // sighhh
@@ -140,15 +139,18 @@ export class StyleSheet {
 
     this.ctr++
     if(isBrowser && this.ctr % this.maxLength === 0) {
-      this.tags.push(makeStyleTag())
+      const tag = this.makeStyleTag();
+      this.tags.push(tag)
+      this.nodes.push({tag: tag, nodes: []});
       this.sheet = sheetForTag(last(this.tags))
     }
     return insertedRule
   }
   flush() {
     if(isBrowser) {
-      this.tags.forEach(tag => tag.parentNode.removeChild(tag))
+      this.tags.forEach(tag => tag.parentNode && tag.parentNode.removeChild(tag))
       this.tags = []
+      this.nodes = {}
       this.sheet = null
       this.ctr = 0
       // todo - look for remnants in document.styleSheets
@@ -168,5 +170,23 @@ export class StyleSheet {
         sheetForTag(tag).cssRules
       )))
     return arr
+  }
+
+  relink() {
+    this.tags.forEach(tag => this.root.appendChild(tag));
+    this.nodes.forEach(({tag, nodes}) => nodes.forEach(node => tag.appendChild(node)));
+  }
+
+  setRoot(rootEl) {
+    this.root = rootEl;
+    this.relink();
+  }
+
+  makeStyleTag() {
+    let tag = document.createElement('style')
+    tag.appendChild(document.createTextNode(''));
+    this.root.appendChild(tag)
+
+    return tag
   }
 }
