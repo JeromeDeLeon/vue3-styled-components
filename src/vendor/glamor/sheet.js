@@ -150,7 +150,7 @@ export class StyleSheet {
     if(isBrowser) {
       this.tags.forEach(tag => tag.parentNode && tag.parentNode.removeChild(tag))
       this.tags = []
-      this.nodes = {}
+      this.nodes = []
       this.sheet = null
       this.ctr = 0
       // todo - look for remnants in document.styleSheets
